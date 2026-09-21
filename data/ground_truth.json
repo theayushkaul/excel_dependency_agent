@@ -1,0 +1,216 @@
+{
+  "description": "Column-level ground-truth dependency edges for dependency_benchmark.xlsx. Each edge means: cell/column 'to' has a formula that references 'from'. kind='indirect_unresolvable_statically' marks the one edge a purely static parser cannot recover without evaluating INDIRECT. Includes lookup_key_array edges: the MATCH() lookup array a formula searches (e.g. Products!ProductID) is a real precedent, separate from the value column it ultimately pulls (e.g. Products!UnitPrice) -- both are genuine dependencies of the same cell.",
+  "sheets": {
+    "Products": 40,
+    "Regions": 8,
+    "Customers": 120,
+    "Sales": 400
+  },
+  "edges": [
+    {
+      "to": "Products!Margin",
+      "from": "Products!UnitCost",
+      "kind": "same_sheet"
+    },
+    {
+      "to": "Products!Margin",
+      "from": "Products!UnitPrice",
+      "kind": "same_sheet"
+    },
+    {
+      "to": "Sales!UnitPrice",
+      "from": "Products!UnitPrice",
+      "kind": "lookup"
+    },
+    {
+      "to": "Sales!UnitPrice",
+      "from": "Sales!ProductID",
+      "kind": "same_sheet_key"
+    },
+    {
+      "to": "Sales!Category",
+      "from": "Products!Category",
+      "kind": "lookup"
+    },
+    {
+      "to": "Sales!Category",
+      "from": "Sales!ProductID",
+      "kind": "same_sheet_key"
+    },
+    {
+      "to": "Sales!RegionID",
+      "from": "Customers!RegionID",
+      "kind": "lookup"
+    },
+    {
+      "to": "Sales!RegionID",
+      "from": "Sales!CustomerID",
+      "kind": "same_sheet_key"
+    },
+    {
+      "to": "Sales!TaxRate",
+      "from": "Regions!TaxRate",
+      "kind": "lookup"
+    },
+    {
+      "to": "Sales!TaxRate",
+      "from": "Sales!RegionID",
+      "kind": "same_sheet_key"
+    },
+    {
+      "to": "Sales!DiscountRate",
+      "from": "Regions!DiscountRate",
+      "kind": "lookup"
+    },
+    {
+      "to": "Sales!DiscountRate",
+      "from": "Sales!RegionID",
+      "kind": "same_sheet_key"
+    },
+    {
+      "to": "Sales!DiscountThreshold",
+      "from": "Regions!DiscountThreshold",
+      "kind": "lookup"
+    },
+    {
+      "to": "Sales!DiscountThreshold",
+      "from": "Sales!RegionID",
+      "kind": "same_sheet_key"
+    },
+    {
+      "to": "Sales!Subtotal",
+      "from": "Sales!Quantity",
+      "kind": "same_sheet"
+    },
+    {
+      "to": "Sales!Subtotal",
+      "from": "Sales!UnitPrice",
+      "kind": "same_sheet"
+    },
+    {
+      "to": "Sales!Discount",
+      "from": "Sales!Quantity",
+      "kind": "same_sheet"
+    },
+    {
+      "to": "Sales!Discount",
+      "from": "Sales!DiscountThreshold",
+      "kind": "same_sheet"
+    },
+    {
+      "to": "Sales!Discount",
+      "from": "Sales!Subtotal",
+      "kind": "same_sheet"
+    },
+    {
+      "to": "Sales!Discount",
+      "from": "Sales!DiscountRate",
+      "kind": "same_sheet"
+    },
+    {
+      "to": "Sales!TaxAmount",
+      "from": "Sales!Subtotal",
+      "kind": "same_sheet"
+    },
+    {
+      "to": "Sales!TaxAmount",
+      "from": "Sales!Discount",
+      "kind": "same_sheet"
+    },
+    {
+      "to": "Sales!TaxAmount",
+      "from": "Sales!TaxRate",
+      "kind": "same_sheet"
+    },
+    {
+      "to": "Sales!Total",
+      "from": "Sales!Subtotal",
+      "kind": "same_sheet"
+    },
+    {
+      "to": "Sales!Total",
+      "from": "Sales!Discount",
+      "kind": "same_sheet"
+    },
+    {
+      "to": "Sales!Total",
+      "from": "Sales!TaxAmount",
+      "kind": "same_sheet"
+    },
+    {
+      "to": "Summary!RevenueByCategory",
+      "from": "Sales!Total",
+      "kind": "aggregate"
+    },
+    {
+      "to": "Summary!RevenueByCategory",
+      "from": "Sales!Category",
+      "kind": "aggregate_key"
+    },
+    {
+      "to": "Summary!TotalRevenue",
+      "from": "Summary!RevenueByCategory",
+      "kind": "same_sheet"
+    },
+    {
+      "to": "Summary!RevenueByRegion",
+      "from": "Sales!Total",
+      "kind": "aggregate"
+    },
+    {
+      "to": "Summary!RevenueByRegion",
+      "from": "Sales!RegionID",
+      "kind": "aggregate_key"
+    },
+    {
+      "to": "Summary!AverageProductMargin",
+      "from": "Products!Margin",
+      "kind": "named_range"
+    },
+    {
+      "to": "Summary!AverageRegionalTaxRate",
+      "from": "Regions!TaxRate",
+      "kind": "named_range"
+    },
+    {
+      "to": "Summary!RowCountOfSelectedSheet",
+      "from": "Summary!SelectedSheet",
+      "kind": "same_sheet"
+    },
+    {
+      "to": "Summary!RowCountOfSelectedSheet",
+      "from": "*dynamic*!column_A",
+      "kind": "indirect_unresolvable_statically"
+    },
+    {
+      "to": "Sales!UnitPrice",
+      "from": "Products!ProductID",
+      "kind": "lookup_key_array"
+    },
+    {
+      "to": "Sales!Category",
+      "from": "Products!ProductID",
+      "kind": "lookup_key_array"
+    },
+    {
+      "to": "Sales!RegionID",
+      "from": "Customers!CustomerID",
+      "kind": "lookup_key_array"
+    },
+    {
+      "to": "Sales!TaxRate",
+      "from": "Regions!RegionID",
+      "kind": "lookup_key_array"
+    },
+    {
+      "to": "Sales!DiscountRate",
+      "from": "Regions!RegionID",
+      "kind": "lookup_key_array"
+    },
+    {
+      "to": "Sales!DiscountThreshold",
+      "from": "Regions!RegionID",
+      "kind": "lookup_key_array"
+    }
+  ]
+}
