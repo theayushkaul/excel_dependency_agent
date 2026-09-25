@@ -72,10 +72,17 @@ explanations in between.
 
 This is a **baseline**, not a finished product. Included:
 
-- Full deterministic extraction (formulas, cross-sheet refs, named ranges,
-  stretched-pattern detection, INDIRECT flagging)
-- A verified benchmark workbook + hand-checked ground truth (see
-  `data/`) and a working precision/recall/F1 scorer
+- Full deterministic extraction: formulas, cross-sheet refs, named ranges,
+  **Excel Table structured references**, **3D sheet ranges**, stretched-
+  pattern detection, **circular-reference detection**, and explicit (never
+  silent) flagging of `INDIRECT`, external-workbook references, and
+  anything else the parser can't resolve
+- Two verified benchmark workbooks: `data/dependency_benchmark.xlsx` (the
+  main one, with hand-checked `ground_truth.json` and a working
+  precision/recall/F1 scorer) and `data/stress_test.xlsx` (harder
+  constructs -- Tables, 3D ranges, an external link, LET, a real circular
+  reference -- used to prove each of those is handled correctly rather
+  than silently mishandled)
 - Both agent modes, wired to the same tool layer
 
 Deliberately left as follow-up work, since "only what's needed" for a
@@ -88,9 +95,6 @@ baseline stops here:
   report sheets where several unrelated metrics share a column (see the
   `Summary` sheet discussion in `core/README.md`). Row- or block-level
   aggregation would need to be added for that case.
-- **Structured-reference / Excel Table syntax** (`Table1[Column]`) -- not
-  exercised in the benchmark workbook; the tokenizer-based extractor
-  should mostly handle it already, but it isn't tested here.
 - **A UI** -- everything here is a Python API; there's no visualization
   front-end yet (Cytoscape.js/vis.js, as discussed earlier, would be the
   natural next piece).

@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import networkx as nx
 
-from .graph import load_graph
+from .graph import load_graph, find_cycles
 
 
 class WorkbookContext:
@@ -79,3 +79,30 @@ class WorkbookContext:
         resolve statically. Always surface these rather than silently
         under-reporting a column's true dependencies."""
         return list(self.extraction.indirect_cells)
+
+    def external_ref_warnings(self) -> list:
+        """Formulas that reference another workbook file -- out of scope for
+        this graph by construction (the target file isn't being parsed),
+        surfaced explicitly rather than silently dropped."""
+        return list(self.extraction.external_refs)
+
+    def unresolved_ref_warnings(self) -> list:
+        """RANGE-shaped tokens the extractor could not resolve to any known
+        cell, table, or named range. A non-empty list here means the graph
+        is under-reporting some column's real dependencies -- treat these
+        as bugs to investigate, not noise to ignore. (LET/LAMBDA local
+        variable names are filtered out of this list already -- see
+        local_name_count.)"""
+        return list(self.extraction.unresolved_refs)
+
+    def local_name_count(self) -> int:
+        """Count of bare short tokens (e.g. LET/LAMBDA local variables) that
+        looked reference-like but were determined not to be real cell
+        references. Informational only -- these are expected, not bugs."""
+        return len(self.extraction.local_names)
+
+    def find_cycles(self) -> list:
+        """Every circular-reference chain in the workbook. Excel normally
+        throws its own circular-reference warning for these; this is the
+        same information, derived from the same graph."""
+        return find_cycles(self.graph)

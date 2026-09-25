@@ -18,7 +18,7 @@ from collections import defaultdict
 import networkx as nx
 import openpyxl
 
-from .extractor import ExtractionResult, extract_workbook
+from .extractor import ExtractionResult, extract_workbook  # noqa: F401 (re-exported)
 
 _ROW_NUM_RE = re.compile(r"\d+$")
 _NORMALIZE_RE = re.compile(r"([A-Za-z]{1,3})\$?(\d+)")
@@ -28,7 +28,9 @@ def _col_letter(cell_coord: str) -> str:
     return _ROW_NUM_RE.sub("", cell_coord)
 
 
-def _classify(from_sheet: str, to_sheet: str, via_named) -> str:
+def _classify(from_sheet: str, to_sheet: str, via_named, via_table=None) -> str:
+    if via_table:
+        return "table_ref"
     if via_named:
         return "named_range"
     return "same_sheet" if from_sheet == to_sheet else "cross_sheet"
@@ -46,7 +48,7 @@ def build_column_graph(extraction: ExtractionResult) -> nx.DiGraph:
             if u == v:
                 continue  # formula referencing its own column -- ignore as noise
             g.add_edge(u, v)
-            edge_kinds[(u, v)].add(_classify(e.from_sheet, e.to_sheet, e.via_named_range))
+            edge_kinds[(u, v)].add(_classify(e.from_sheet, e.to_sheet, e.via_named_range, e.via_table))
 
     for (u, v), kinds in edge_kinds.items():
         g.edges[u, v]["kinds"] = sorted(kinds)
@@ -87,6 +89,13 @@ def detect_stretched_columns(path: str, extraction: ExtractionResult) -> dict:
             "n_rows": len(formulas),
         }
     return out
+
+
+def find_cycles(graph: nx.DiGraph) -> list:
+    """Every circular-reference chain in the graph -- Excel normally throws
+    a circular-reference warning for these. Each result is a list of nodes
+    forming one cycle (A -> B -> C -> A)."""
+    return list(nx.simple_cycles(graph))
 
 
 def load_graph(path: str):
